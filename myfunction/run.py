@@ -11,10 +11,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'l
 
 import json
 from AzureHTTPHelper import HTTPHelper
-
+from azure.servicebus import 
 # This is a little class used to abstract away some basic HTTP functionality
 http = HTTPHelper()
-
+from azure.servicebus import ServiceBusService
+from azure.servicebus import Message
 # All these print statements get sent to the Azure Functions live log
 print "--- GET ---"
 print http.get
@@ -23,6 +24,13 @@ print
 print "--- POST ---"
 print http.post
 print
+
+key_name = 'RootManageSharedAccessKey' # SharedAccessKeyName from Azure portal
+key_value = '4My+blZDLkuXYCnqWNlx35V5wA+9XiBZvxwccRNG7bg=' # SharedAccessKey from Azure portal
+sbs = ServiceBusService('mynamespace0', shared_access_key_name=key_name, shared_access_key_value=key_value)
+msg = Message(http.post)
+sbs.send_queue_message('t', msg)
+print "##########Message sent##############"
 
 print "--- HEADERS ---"
 print http.headers
